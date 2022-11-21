@@ -12,7 +12,7 @@ class Assignment(models.Model):
     
     grade_type_choices = [
         ('A', 'Letter Grade'),
-        ('N', 'Numerica Grade')
+        ('N', 'Numerical Grade')
     ]
     
     grade_type = models.CharField(

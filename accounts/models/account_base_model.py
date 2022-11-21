@@ -7,7 +7,9 @@ class Account(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="user"
+        related_name="%(app_label)s_%(class)s_account",
+        related_query_name="%(app_label)s_%(class)ss",
+        
     )
     first_name= models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
