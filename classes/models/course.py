@@ -1,7 +1,7 @@
 from django.db import models
 from accounts.models.teacher import Teacher
 
-class Course:
+class Course(models.Model):
     teacher = models.ForeignKey(
         Teacher,
         on_delete=models.CASCADE,

@@ -16,18 +16,9 @@ class Grade(models.Model):
         related_name='grades'
     ) 
     
-    feedback = models.CharField(max_lenth='300')
+    feedback = models.CharField(max_length=300)
     
-    def set_grade_type(self):
-        if self.assignment.grade_type == 'A':
-            return models.CharField(max_length='10')
-        elif self.assignment.grade_type == 'N':
-            return models.DecimalField(
-                max_digits=3, 
-                decimal_places=2,
-            )
-    
-    value = set_grade_type()
+    value = models.CharField(max_length=10)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
