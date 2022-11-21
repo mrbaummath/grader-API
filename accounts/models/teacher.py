@@ -1,5 +1,5 @@
 from django.db import models
-from account_base_model import Account
+from .account_base_model import Account
 
 #Teacher specific account model
 class Teacher(Account):
