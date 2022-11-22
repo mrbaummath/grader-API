@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework import generics, status
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from ..serializers import AccountSerializer
+from ..models.teacher import Teacher
+from ..models.student import Student
 
 
 #custom user model
@@ -19,7 +21,6 @@ class AccountsList(generics.ListAPIView):
     
 # /accounts/login/ user login 
 #POST /accounts/login/
-
 
 class LoginView(generics.CreateAPIView):
     
