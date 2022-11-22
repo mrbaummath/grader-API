@@ -40,8 +40,8 @@ class LoginView(generics.CreateAPIView):
                     "user":{
                         "id": user.id,
                         "username": user.username,
-                        "isTeacher": user.isTeacher,
-                        "isStudent": user.isStudent,
+                        "isTeacher": user.is_teacher,
+                        "isStudent": user.is_student,
                     }
                 })
             else:
