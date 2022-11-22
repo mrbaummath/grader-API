@@ -14,3 +14,6 @@ class Section(models.Model):
         blank=True,
         null=True
     )
+    
+    def __str__(self):
+        return f"{self.course.name}: {self.name}"

@@ -9,6 +9,8 @@ class Account(models.Model):
         on_delete=models.CASCADE,
         related_name="%(app_label)s_%(class)s_account",
         related_query_name="%(app_label)s_%(class)ss",
+        blank=True,
+        null=True
         
     )
     first_name= models.CharField(max_length=100)

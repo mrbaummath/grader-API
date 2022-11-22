@@ -6,6 +6,6 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     isTeacher = models.BooleanField(default=False)
-    isStudent = models.BooleanField(default=True)
+    isStudent = models.BooleanField(default=False)
     
 
