@@ -36,6 +36,13 @@ class LoginView(generics.CreateAPIView):
         if user is not None:
             if user.is_active:
                 login(request, user)
+
+                if user.is_teacher:
+                    request.session['account_type'] = 'teacher'
+                    request.session['teacher_id'] = user.teacher.id
+                elif user.is_student: 
+                    request.session['account_type'] = 'student'
+                    request.session['student_id'] = user.student.id
                 return Response({
                     "user":{
                         "id": user.id,
