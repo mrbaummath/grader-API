@@ -11,6 +11,7 @@ class CourseViewSerializer(serializers.ModelSerializer):
 
 #serializer for creating, updating, destroying a course
 class CourseCUDSerializer(serializers.ModelSerializer):
+   
     class Meta:
         model = Course
         fields = ("name", "subject","teacher")

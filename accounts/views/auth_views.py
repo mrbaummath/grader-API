@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import generics, status
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from ..serializers import AccountSerializer
+from ..serializers import UserSerializer, UserSignupSerializer
 from ..models.teacher import Teacher
 from ..models.student import Student
 
@@ -17,14 +17,14 @@ User = get_user_model()
 # GET /accounts/
 class AccountsList(generics.ListAPIView):
     queryset = User.objects.all()
-    serializer_class = AccountSerializer
+    serializer_class = UserSerializer
     
 # /accounts/login/ user login 
 #POST /accounts/login/
 
 class LoginView(generics.CreateAPIView):
     
-    serializer_class = AccountSerializer
+    serializer_class = UserSerializer
     
     def post(self, request):
         credentials = request.data
@@ -66,3 +66,7 @@ class LogoutView(generics.DestroyAPIView):
     def delete(self,request):
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class SignupView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSignupSerializer

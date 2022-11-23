@@ -1,13 +1,11 @@
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework import generics, status
 from django.shortcuts import get_object_or_404
-from .models.section import Section
-from .models.course import Course
-from .serializers import CourseViewSerializer, CourseCUDSerializer
-from accounts.models.user import User
+from ..models.course import Course
+from ..serializers import CourseViewSerializer, CourseCUDSerializer
 
 
 # index and create route for courses 
@@ -15,24 +13,22 @@ from accounts.models.user import User
 class CoursesView(generics.ListCreateAPIView):
     
     authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [DjangoModelPermissions]
     serializer_class = CourseViewSerializer
-    # GET /courses
-    def get(self, request):
-        """Index all courses GET /courses"""
-        account_type = request.session["account_type"]
-        
-        if account_type == "teacher":
-            teacher_id = request.session["teacher_id"]
-            queryset = Course.objects.filter(teacher=teacher_id)
-            serializer = CourseViewSerializer(queryset, many=True)
-            print(request.user.id)
-            return Response({
-            'courses': serializer.data,
-            'account_type': account_type
-            })
+    
+    def get_queryset(self):
+        if self.request.session["account_type"]:
+            account_type = self.request.session["account_type"]
+            if account_type == "teacher":
+                teacher_id = self.request.session["teacher_id"]
+                return Course.objects.filter(teacher=teacher_id)
+            else:
+                return None
         else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return None
+    
+    
+   
     def post(self, request):
         """Create Request POST /courses"""
         #copy request.data b/c request.data is immutable but the copy will be mutable
@@ -53,6 +49,7 @@ class CourseRUDView(generics.RetrieveUpdateDestroyAPIView):
     
     def get(self, request, pk):
         """View single course details GET /courses/course_id"""
+        self.serializer_class = CourseCUDSerializer
         account_type = request.session["account_type"]
         if account_type == "teacher":
             course = get_object_or_404(Course, pk=pk)
@@ -74,6 +71,7 @@ class CourseRUDView(generics.RetrieveUpdateDestroyAPIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
     
     def partial_update(self, request, pk):
+        self.serializer_class = CourseCUDSerializer
         account_type = request.session["account_type"]
         if account_type == 'teacher':
             course = get_object_or_404(Course, pk=pk)

@@ -11,8 +11,8 @@ class Section(models.Model):
     name = models.CharField(max_length=20)
     students = models.ManyToManyField(
         Student,
+        related_name = "classes",
         blank=True,
-        null=True
     )
     
     def __str__(self):
