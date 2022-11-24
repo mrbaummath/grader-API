@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from .models.teacher import Teacher
 
 User = get_user_model()
 
@@ -44,3 +45,10 @@ class UserSignupSerializer(serializers.Serializer):
     def create(self, validated_data):
         del validated_data["password_confirmation"]
         return User.objects.create_user(**validated_data)
+
+class TeacherViewSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Teacher
+        fields = '__all__'
+    
