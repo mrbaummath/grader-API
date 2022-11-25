@@ -14,7 +14,7 @@ class UserManager(BaseUserManager):
     #     pass
         
         
-    def create_user(self,**validated_data):
+    def create_user(self, **validated_data):
         """Create a new user profile and associated account type"""
         #take out password to set later
         password = validated_data.pop("password")

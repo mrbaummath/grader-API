@@ -15,11 +15,6 @@ class Teacher(Account):
         honorific = self.title if len(self.title) > 0 else "Instructor"
         return f"{honorific} {self.last_name}"
     
-    def create(self, **validated_data):
-        print(f"**THIS IS DATA********** {validated_data}")
-        teacher = self.model(validated_data)
-        teacher.save()
-        return teacher
     
     
 

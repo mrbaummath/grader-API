@@ -72,6 +72,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'grader_API.wsgi.application'
 
+#Django Rest Framework settings. Will default to session authentication and is authetnicated permissions. Specific views will be protected using django groups
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication'
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ]
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
