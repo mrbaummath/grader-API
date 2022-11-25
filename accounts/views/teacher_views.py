@@ -3,13 +3,24 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.views import APIView
-from django.contrib.auth import get_user_model, authenticate, login, logout
-from ..serializers import UserSerializer, UserSignupSerializer, TeacherViewSerializer
+
+from ..serializers import TeacherSerializer
 from ..models.teacher import Teacher
 from ..models.student import Student
 
-class TeachersView(generics.ListAPIView):
+#Index and create teachers
+# /accounts/teachers GET, POST
+class TeacherListCreateView(generics.ListCreateAPIView):
+    """Index all teachers and create a new teacher. The client API will make a POST call to this route automatically when a new teacher user is created"""
     queryset = Teacher.objects.all()
-    serializer_class = TeacherViewSerializer
+    serializer_class = TeacherSerializer
+    
+class TeacherDetailView(APIView):
+    serializer_class = TeacherSerializer
+    def get(self, request, pk):
+        return Response(data=request.session)
+        
+    
+
     
     

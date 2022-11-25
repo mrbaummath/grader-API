@@ -67,7 +67,9 @@ class LogoutView(APIView):
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class SignupView(generics.CreateAPIView):
+#
+class UserSignupView(generics.CreateAPIView):
+    
     authentication_classes = ()
     permission_classes = ()
     queryset = User.objects.all()

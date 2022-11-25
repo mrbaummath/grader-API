@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models.teacher import Teacher
+from .models.student import Student
 
 User = get_user_model()
 
@@ -12,15 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = { 'password': { 'write_only': True, 'min_length': 1 } }
 
 class UserSignupSerializer(serializers.Serializer):
-    first_name = serializers.CharField(max_length = 50)
-    last_name = serializers.CharField(max_length = 50)
-    teacher_code = serializers.CharField(max_length = 10, required=False)
-    year_in_school = serializers.ChoiceField([
-        ("FR", "First Year"),
-        ("SO", "Sophomore"),
-        ("JR", "Junior"),
-        ("SR", "Senior"),   
-    ], required=False)
     email = serializers.CharField(max_length=50, required=True)
     username = serializers.CharField(max_length=50, required=True)
     password = serializers.CharField(required=True)
@@ -44,11 +36,20 @@ class UserSignupSerializer(serializers.Serializer):
     
     def create(self, validated_data):
         del validated_data["password_confirmation"]
-        return User.objects.create_user(**validated_data)
+        # create the user
+       
+        user = User.objects.create_user(**validated_data)
+        return user
 
-class TeacherViewSerializer(serializers.ModelSerializer):
-    
+class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = '__all__'
-    
+
+
+
+class StudentCreateUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ("first_name", "last_name", "pronouns", "year_in_school", "user")
+        
