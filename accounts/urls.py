@@ -1,14 +1,15 @@
 from django.urls import path
 from .views.auth_views import AccountsList, LoginView, LogoutView, UserSignupView
-from .views.teacher_views import TeacherListCreateView, TeacherDetailView
+from .views.teacher_views import TeacherListView, TeacherRUDView
+from .views.student_views import StudentListView, StudentRUDView
 
 urlpatterns = [
     path('', AccountsList.as_view(), name='accounts'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('signup/', UserSignupView.as_view(), name='signup'),
-    path('teachers/', TeacherListCreateView.as_view(), name='teachers' ),
-    path('teachers/<int:pk>', TeacherDetailView.as_view(), name='teacher'),
-    path('teachers/', TeacherListCreateView.as_view(), name='teachers' ),
-    path('teachers/<int:pk>', TeacherDetailView.as_view(), name='teacher'),
+    path('teachers/', TeacherListView.as_view(), name='teachers' ),
+    path('teachers/<int:pk>', TeacherRUDView.as_view(), name='teacher'),
+    path('students/', StudentListView.as_view(), name='teachers' ),
+    path('students/<int:pk>', StudentRUDView.as_view(), name='teacher'),
 ]

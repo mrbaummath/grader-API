@@ -24,7 +24,7 @@ class AccountsList(generics.ListAPIView):
 #POST /accounts/login/
 
 class LoginView(APIView):
-    
+    permission_classes=[]
     serializer_class = UserSerializer
     
     def post(self, request):

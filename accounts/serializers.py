@@ -27,7 +27,7 @@ class UserSignupSerializer(serializers.Serializer):
     ], write_only=True, required=False)
     email = serializers.CharField(max_length=50, required=True)
     username = serializers.CharField(max_length=50, required=True)
-    password = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only = True)
     password_confirmation = serializers.CharField(required=True, write_only=True)
     is_teacher = serializers.BooleanField()
     is_student = serializers.BooleanField()
@@ -65,10 +65,12 @@ class UserSignupSerializer(serializers.Serializer):
         if user.is_teacher:
             account_data["title"] = title
             teacher = Teacher.objects.create(**account_data)
+            user.groups.add(1)
             teacher.save()
         elif user.is_student:
             account_data["year"] = year_in_school
             student = Student.objects.create(**account_data)
+            user.groups.add(2)
             student.save()
         return user
 
