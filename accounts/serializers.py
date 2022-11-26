@@ -91,7 +91,6 @@ class TeacherSerializer(serializers.ModelSerializer):
         
 
 
-
 class StudentSerializer(serializers.ModelSerializer):
     email = serializers.SerializerMethodField()
     
