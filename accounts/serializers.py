@@ -96,7 +96,7 @@ class StudentSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Student
-        fields = ("first_name", "last_name", "pronouns", "year_in_school", "email")
+        fields = ("first_name", "last_name", "pronouns", "year", "email")
     
     def get_email(self, obj):
         user = UserSerializer(obj.user)

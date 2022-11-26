@@ -16,6 +16,7 @@ class UserAdmin(BaseUserAdmin):
                   'is_active',
                   'is_staff',
                   'is_superuser',
+                  'groups',
               )
           }
       ),
@@ -30,12 +31,15 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
 
+class TeacherAdmin(admin.ModelAdmin):
+    readonly_fields= ['id']
+
 
 
 
 # Register user model w/ admin site
 admin.site.register(User, UserAdmin)
 admin.site.register(Student)
-admin.site.register(Teacher)
+admin.site.register(Teacher, TeacherAdmin)
 
 

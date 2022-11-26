@@ -49,9 +49,14 @@ class CourseRUDSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def get_students(self, obj):
-        students = Student.objects.filter(class__course = obj)
+        student_ids = obj.sections.values_list('students', flat=True)
+        students = []
+        for id in student_ids:
+            student = Student.objects.get(pk=id)
+            students.append(student)
         serialized_students = StudentSerializer(students, many=True)
-        return serialized_students
+        return serialized_students.data
+
         
          
         
