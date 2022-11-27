@@ -15,6 +15,11 @@ class Account(models.Model):
     first_name= models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     pronouns = models.CharField(max_length=100)
+    email = models.CharField(
+        max_length = 100, 
+        null=False,
+        unique=True
+        )
     
     
     class Meta:

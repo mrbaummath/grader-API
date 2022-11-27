@@ -54,6 +54,7 @@ class UserSignupSerializer(serializers.Serializer):
         first_name = validated_data.pop("first_name")
         last_name = validated_data.pop("last_name")
         pronouns = validated_data.pop("pronouns")
+        email = validated_data.pop("email")
         title = validated_data.pop("title", None)
         year_in_school = validated_data.pop("year_in_school", None)
         # create the user
@@ -62,7 +63,8 @@ class UserSignupSerializer(serializers.Serializer):
             "first_name": first_name,
             "last_name": last_name,
             "pronouns": pronouns,
-            "user": user
+            "user": user,
+            "email": email
         }
         if user.is_teacher:
             account_data["title"] = title
@@ -71,38 +73,37 @@ class UserSignupSerializer(serializers.Serializer):
             teacher.save()
         elif user.is_student:
             account_data["year"] = year_in_school
-            student = Student.objects.create(**account_data)
-            user.groups.add(2)
-            student.save()
+            #see if a teacher has already created a profile for the student by looking up via email. 
+            if Student.objects.filter(email=email).exists():
+                student = Student.objects.get(email=email)
+                student.user = user
+                student.save()
+            #otherwise create the student model
+            else:
+                student = Student.objects.create(**account_data)
+                user.groups.add(2)
+                student.save()
         return user
 
 class TeacherSerializer(serializers.ModelSerializer):
     
-    email = serializers.SerializerMethodField()
     full_title = serializers.SerializerMethodField()
     class Meta:
         model = Teacher
         fields = ("first_name", "last_name", "email", "full_title", "pronouns")
-    
-    def get_email(self, obj):
-        user = UserSerializer(obj.user)
-        return user.data["email"]
-    
+
     def get_full_title(self, obj):
         return obj.__str__()
         
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    email = serializers.SerializerMethodField()
-    
+  
     class Meta:
         model = Student
-        fields = ("first_name", "last_name", "pronouns", "year", "email")
+        fields = ("id", "first_name", "last_name", "pronouns", "year", "email")
     
-    def get_email(self, obj):
-        user = UserSerializer(obj.user)
-        return user.data["email"]
-    
+
+
     
         

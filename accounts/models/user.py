@@ -24,6 +24,17 @@ class UserManager(BaseUserManager):
         user.save()
         return user
     
+    def create_superuser(self,**data):
+        """Create and save a new superuser with given details"""
+
+
+        user = self.create_user(**data)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
+
+        return user
+    
     
 
 class User(AbstractUser):

@@ -1,6 +1,7 @@
 from django.db import models
 from .account_base_model import Account
 
+
 #Teacher specific account model
 class Student(Account):
     

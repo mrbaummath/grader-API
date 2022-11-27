@@ -16,7 +16,7 @@ class Grade(models.Model):
         related_name='grades'
     ) 
     
-    feedback = models.CharField(max_length=300)
+    feedback = models.TextField()
     
     value = models.CharField(max_length=10)
     
