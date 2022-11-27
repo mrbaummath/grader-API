@@ -2,6 +2,7 @@
 from rest_framework import generics
 from rest_framework.permissions import DjangoModelPermissions
 
+
 from ..serializers import StudentSerializer
 
 from ..models.student import Student
@@ -17,6 +18,7 @@ class StudentListView(generics.ListAPIView):
 # /accounts/students/<pk> GET, POST, PUT, PATCH, DELETE
 class StudentRUDView(generics.RetrieveUpdateDestroyAPIView):
     """Detailed view, update, delete view for a single student"""
-    permission_classes = (DjangoModelPermissions)
+    permission_classes = [DjangoModelPermissions]
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
+

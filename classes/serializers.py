@@ -13,16 +13,56 @@ class SectionNestedSerializer(serializers.ModelSerializer):
         extra_kwargs = { 'code': { 'write_only': True } }
 
 
+#section list and create serializer
+class SectionListCreateSerializer(serializers.ModelSerializer):
+    course = serializers.StringRelatedField()
+    class Meta:
+        model = Section
+        fields = "__all__"
+        extra_kwargs = {
+            'students': {'read_only': True},
+            'code': {"read_only": True},
+        }
+    #custom creation to automatically generate code and set course w/o needing client to explicitly do so.
+    def create(self, validated_data):
+        validated_data["course_id"] = self.context.get('view').kwargs["course_id"]
+        all_codes = Section.objects.values_list('code', flat=True)
+        validated_data["code"] = generate_section_code(all_codes)
+        section = Section.objects.create(**validated_data)
+        section.save()
+        return section
+    
+    
+#section detail serializer will have student data on a per section basis
+class SectionRUDSerializer(serializers.ModelSerializer):
+    course = serializers.StringRelatedField()
+    students = StudentSerializer(many=True)
+    teacher = serializers.SerializerMethodField()
+    class Meta:
+        model = Section
+        fields = ("name", "teacher", "students", "course","code")
+    
+    def get_teacher(self,obj):
+        return obj.course.teacher.__str__()
 
+#serializer for student view of their sections
+class StudentSectionListSerializer(serializers.ModelSerializer):
+    teacher = serializers.SerializerMethodField()
+    course = serializers.StringRelatedField()
+    class Meta:
+        model = Section
+        fields = ("name", "teacher", "course")
+    def get_teacher(self,obj):
+        return obj.course.teacher.__str__()
 
 #serializer for indexing/creating a course and simultaneously creating sections
 class CourseListCreateSerializer(serializers.ModelSerializer):
-    
+    teacher = serializers.StringRelatedField()
     sections = SectionNestedSerializer(many=True)
-   
     class Meta:
         model = Course
         fields = ("name", "subject","teacher", "sections")
+    
     
     #simultaneous creation of course and its related section will require a nested object coming from the client. The 'sections' object must be an interable The view is not customized to process the request appropriately. JSON should be sent according to the pattern {'sections': [{section feilds dict}, {'''}}, {'''}...'''}...], 'course':{course feilds dict}
     def create(self, validated_data):
@@ -33,7 +73,6 @@ class CourseListCreateSerializer(serializers.ModelSerializer):
             all_codes = Section.objects.values_list('code', flat=True)
             all_codes = list(all_codes)
             for section_data in sections_data:
-                thing = generate_section_code(all_codes)
                 section_data["code"] = generate_section_code(all_codes)
                 section = Section.objects.create(course=course, **section_data)
                 section.save()
@@ -41,6 +80,7 @@ class CourseListCreateSerializer(serializers.ModelSerializer):
 
 #serializer for updating/deleting a course and seeing details. Section updated/deletion handled separately
 class CourseRUDSerializer(serializers.ModelSerializer):
+    teacher = serializers.StringRelatedField()
     sections = SectionNestedSerializer(many=True, read_only=True)
     students = serializers.SerializerMethodField()
     
@@ -56,6 +96,7 @@ class CourseRUDSerializer(serializers.ModelSerializer):
             students.append(student)
         serialized_students = StudentSerializer(students, many=True)
         return serialized_students.data
+    
 
         
          

@@ -3,6 +3,8 @@ from rest_framework import serializers
 from .models.teacher import Teacher
 from .models.student import Student
 
+
+
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
@@ -101,4 +103,6 @@ class StudentSerializer(serializers.ModelSerializer):
     def get_email(self, obj):
         user = UserSerializer(obj.user)
         return user.data["email"]
+    
+    
         

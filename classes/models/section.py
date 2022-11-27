@@ -18,16 +18,15 @@ class Section(models.Model):
         related_name = "classes",
         blank=True,
     )
-    
-    
+
     
     #serializer will call to custom generation function when object is instantiated
     code = models.CharField(max_length=7, null=True)
     
     
-    
     def __str__(self):
         return f"{self.course.name}: {self.name}"
+    
     
 
         
