@@ -37,16 +37,11 @@ class LoginView(APIView):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                if user.is_teacher:
-                    request.session['account_type'] = 'teacher'
-                    request.session['teacher_id'] = user.teacher.id
-                elif user.is_student: 
-                    request.session['account_type'] = 'student'
-                    request.session['student_id'] = user.student.id
                 return Response({
                     "user":{
                         "id": user.id,
                         "username": user.username,
+                        "token": user.get_auth_token(),
                         "isTeacher": user.is_teacher,
                         "isStudent": user.is_student,
                     }
@@ -62,8 +57,10 @@ class LoginView(APIView):
                     status=status.HTTP_422_UNPROCESSABLE_ENTITY
                     )
 # /accounts logout 
-class LogoutView(APIView):
-    def get(self,request):
+class LogoutView(generics.DestroyAPIView):
+    def delete(self,request):
+        print(f"***************{request}")
+        request.user.delete_token()
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

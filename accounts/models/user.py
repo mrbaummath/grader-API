@@ -1,7 +1,7 @@
 from django.db import models
 #import Django's built in User model
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager
-
+from rest_framework.authtoken.models import Token
 
 
 #custom User model will track whether user is a teacher or student. Within the gradebook app, a teacher or student account will reference the user by foreign key in a one-to-one relationship
@@ -36,6 +36,7 @@ class UserManager(BaseUserManager):
         return user
     
     
+    
 
 class User(AbstractUser):
     is_teacher = models.BooleanField(default=False)
@@ -44,6 +45,19 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
     
     objects = UserManager()
+    
+    def get_auth_token(self):
+        Token.objects.filter(user=self).delete()
+        token = Token.objects.create(user=self)
+        self.token = token.key
+        self.save()
+        return token.key
+
+    def delete_token(self):
+        Token.objects.filter(user=self).delete()
+        self.token = None
+        self.save()
+        return self
 
 
         

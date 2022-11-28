@@ -28,7 +28,7 @@ class SectionRUDView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Section.objects.all()
     serializer_class = SectionRUDSerializer
 
-#view for a student to retrieve class information. Uses request session context so it is not accessible to anyone who is not logged in as the student
+#view for a student to retrieve class information. Uses request context so it is not accessible to anyone who is not logged in as the student
 
 # /courses/myclasses GET
 class StudentSectionList(generics.ListAPIView):
