@@ -6,19 +6,23 @@ from rest_framework.response import Response
 from accounts.models.student import Student
 from classes.models.section import Section
 
+#index assignments from a particular course and create an assignment 
+# /gradebook/assignments/<course_id>/ GET POST
 class AssignmentListCreateView(generics.ListCreateAPIView):
     permission_classes = [DjangoModelPermissions]
     serializer_class = AssignmentSerializer
     def get_queryset(self):
+        course_id = self.kwargs["course_id"]
         user = self.request.user
         if user.is_superuser:
             return Assignment.objects.all()
         elif user.is_teacher:
-            return Assignment.objects.filter(teacher=user.teacher)
+            return Assignment.objects.filter(teacher=user.teacher).filter(course=course_id)
         else:
             return None
 
 #teacher view to see, update, delete assignments 
+# /gradebook/assignments/<pk>/ GET, PATCH, PUT, DELETE
 class AssignmentRUDView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [DjangoModelPermissions]
     serializer_class = AssignmentSerializer
@@ -32,6 +36,7 @@ class AssignmentRUDView(generics.RetrieveUpdateDestroyAPIView):
             return None
 
 #view for a student to see their assignments.
+# gradebook/assignments/student/
 class StudentAssignmentView(generics.ListAPIView):
     permission_classes = [DjangoModelPermissions]
     serializer_class = AssignmentSerializer
