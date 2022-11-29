@@ -3,6 +3,8 @@ from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import generics
 from ..models.course import Course
 from ..serializers import CourseListCreateSerializer, CourseRUDSerializer
+from accounts.models.user import User
+from django.shortcuts import get_object_or_404
 
 
 # index and create route for courses. This view can also be used to create related sections (see the serializer, which includes nested writale views of the sections)
@@ -13,6 +15,8 @@ class CourseListCreateView(generics.ListCreateAPIView):
     serializer_class = CourseListCreateSerializer
     #restrict queryet to current teacher user (or return all if superuser). Students do not have access to course level views
     def get_queryset(self):
+        # user_id = self.kwargs['user_id']
+        # user = get_object_or_404(User, pk=user_id)
         user = self.request.user
         if user.is_teacher:
             return Course.objects.filter(teacher=user.teacher)

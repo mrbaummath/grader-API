@@ -58,10 +58,10 @@ class StudentSectionListSerializer(serializers.ModelSerializer):
 #serializer for indexing/creating a course and simultaneously creating sections
 class CourseListCreateSerializer(serializers.ModelSerializer):
     teacher = serializers.StringRelatedField()
-    sections = SectionNestedSerializer(many=True)
+    sections = SectionNestedSerializer(many=True, write_only=True)
     class Meta:
         model = Course
-        fields = ("name", "subject","teacher", "sections")
+        fields = ("name", "subject","teacher", "sections", "id")
     
     
     #simultaneous creation of course and its related section will require a nested object coming from the client. The 'sections' object must be an interable The view is not customized to process the request appropriately. JSON should be sent according to the pattern {'sections': [{section feilds dict}, {'''}}, {'''}...'''}...], 'course':{course feilds dict}

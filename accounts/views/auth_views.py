@@ -1,5 +1,5 @@
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.views import APIView
@@ -37,15 +37,37 @@ class LoginView(APIView):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return Response({
-                    "user":{
-                        "id": user.id,
-                        "username": user.username,
-                        "token": user.get_auth_token(),
-                        "isTeacher": user.is_teacher,
-                        "isStudent": user.is_student,
-                    }
-                })
+                if user.is_teacher:
+                    return Response({
+                        "user":{
+                            "id": user.id,
+                            "teacherId": user.teacher.id,
+                            "username": user.username,
+                            "token": user.get_auth_token(),
+                            "type": 'teacher',
+                            "firstName": user.teacher.first_name,
+                            "lastName": user.teacher.last_name,
+                            "email": user.teacher.email,
+                            "pronouns": user.teacher.pronouns,
+                            "title": user.teacher.__str__(),
+                        }
+                    })
+                elif user.is_student:
+                    return Response({
+                        "user":{
+                            "id": user.id,
+                            "studentId": user.student.id,
+                            "username": user.username,
+                            "token": user.get_auth_token(),
+                            "type": 'student',
+                            "firstName": user.student.first_name,
+                            "lastName": user.student.last_name,
+                            "email": user.student.email,
+                            "pronouns": user.student.pronouns,
+                            "name": user.student.__str__(),
+                            "year": user.student.year,
+                        }
+                    })
             else:
                 return Response(
                     {"msg": "Account is not active"}, 
@@ -59,15 +81,16 @@ class LoginView(APIView):
 # /accounts logout 
 class LogoutView(generics.DestroyAPIView):
     def delete(self,request):
-        print(f"***************{request}")
         request.user.delete_token()
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 #
 class UserSignupView(generics.CreateAPIView):
-    
-    authentication_classes = ()
-    permission_classes = ()
-    queryset = User.objects.all()
+    authorization_classes = ()
+    permission_classes = [permissions.AllowAny]
     serializer_class = UserSignupSerializer
+    
+    # def post(sel, request):
+    #     print(f"************sdfkljdfkjdfjkldjklf***********{request.data}")
+    #     return Response(status=status.HTTP_204_NO_CONTENT)

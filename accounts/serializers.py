@@ -35,6 +35,7 @@ class UserSignupSerializer(serializers.Serializer):
     is_student = serializers.BooleanField()
 
     def validate(self, data):
+        print(f"****************{data}")
         # Ensure password & password_confirmation exist
         if not data['password'] or not data['password_confirmation']:
             raise serializers.ValidationError('Please include a password and password confirmation.')
@@ -50,6 +51,7 @@ class UserSignupSerializer(serializers.Serializer):
     
     def create(self, validated_data):
         del validated_data["password_confirmation"]
+        
         #pop out arguments not needed for creating the user model. THese will be used to instantiate either a teacher or a student as needed
         first_name = validated_data.pop("first_name")
         last_name = validated_data.pop("last_name")
