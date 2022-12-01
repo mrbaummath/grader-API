@@ -1,5 +1,7 @@
 from django.db import models
 from accounts.models.teacher import Teacher
+from accounts.models.student import Student
+
 
 class Course(models.Model):
     teacher = models.ForeignKey(
@@ -12,5 +14,11 @@ class Course(models.Model):
     
     terms = models.JSONField(default=dict)
     
+    def students(self):
+        student_ids = self.sections.values_list('students', flat=True)
+        students = Student.objects.filter(id__in=student_ids)
+        return students
+    
+
     def __str__(self):
         return f"{self.name}"

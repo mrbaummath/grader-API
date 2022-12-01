@@ -1,20 +1,25 @@
 from django.db import models
-from .assignment import Assignment
-from accounts.models.student import Student
+
 
 class Grade(models.Model):
     
     assignment = models.ForeignKey(
-        Assignment,
+        "Assignment",
         on_delete=models.CASCADE,
         related_name='grades'
     )
     
     student = models.ForeignKey(
-        Student,
+        "accounts.Student",
         on_delete=models.CASCADE,
         related_name='grades'
     ) 
+    
+    course = models.ForeignKey(
+        "classes.Course",
+        on_delete = models.CASCADE,
+        related_name = 'grades'
+    )
     
     feedback = models.TextField()
     

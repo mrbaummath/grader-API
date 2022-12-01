@@ -1,5 +1,4 @@
 from django.db import models
-from classes.models.course import Course
 from accounts.models.teacher import Teacher
 
 class Assignment(models.Model):
@@ -21,7 +20,7 @@ class Assignment(models.Model):
     )
     
     course = models.ForeignKey(
-        Course,
+        "classes.Course",
         on_delete=models.CASCADE,
         related_name='assignments',
         related_query_name='assignment',
@@ -35,6 +34,9 @@ class Assignment(models.Model):
         max_length=20,
         blank= True,
     )
+    
+    def __str__(self):
+        return self.name
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

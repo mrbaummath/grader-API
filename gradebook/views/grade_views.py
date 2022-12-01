@@ -1,11 +1,14 @@
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import generics, status
-from ..models.assignment import Assignment
-from ..serializers import AssignmentSerializer, GradeSerializer
+from ..serializers import GradeSerializer, CourseGradesByStudentSerializer
 from rest_framework.response import Response
-from accounts.models.student import Student
-from classes.models.section import Section
+from classes.models.course import Course
 from ..models.grade import Grade
+from accounts.models.student import Student
+from ..models.assignment import Assignment
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+
 
 #list / create grades for a given assignment
 # if creating, client will provide all information 
@@ -49,4 +52,33 @@ class StudentGradesView(generics.ListAPIView):
             return Grade.objects.filter(student = user.student.id)
         else:
             return None
+
+class CourseGradesByStudentView(generics.ListAPIView):
+    serializer_class = CourseGradesByStudentSerializer
     
+    def get_queryset(self):
+        course_id = self.kwargs["course_id"]
+        return Course.objects.get(pk=course_id).students()
+    
+    def get(self, request, course_id):
+        assignments = Assignment.objects.filter(course=self.kwargs["course_id"]).values("id", "name")
+        return Response({"assignments": assignments, "grades":self.list(request).data})
+
+class UpdateGradesFromTable(APIView):
+    
+    def patch(self, request):
+        user = request.user
+        updates = request.data['update_pairs']
+        updated = []
+        
+        for update in updates:
+            grade = get_object_or_404(Grade, pk=update["gradeId"])
+            data = {"value": update["newGradeValue"]}
+            serializer = GradeSerializer(grade, data=data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                updated.append(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'updated_grades': updates}, status=status.HTTP_200_OK)
+            

@@ -17,5 +17,7 @@ class Student(Account):
         choices = YEAR_CHOICES,
     )
     
+    is_user= models.BooleanField(null=False)
+    
     def __str__(self):
         return f"{self.last_name}, {self.first_name}"

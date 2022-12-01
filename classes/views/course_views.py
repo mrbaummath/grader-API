@@ -41,5 +41,7 @@ class CourseRUDView(generics.RetrieveUpdateDestroyAPIView):
             return Course.objects.all()
         else:
             return []
+
+
         
         

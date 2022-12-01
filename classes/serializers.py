@@ -96,7 +96,11 @@ class CourseRUDSerializer(serializers.ModelSerializer):
             students.append(student)
         serialized_students = StudentSerializer(students, many=True)
         return serialized_students.data
+
+
     
+    
+        
 
         
          
