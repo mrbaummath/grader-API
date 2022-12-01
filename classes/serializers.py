@@ -9,7 +9,7 @@ from .utils import *
 class SectionNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
-        fields = ('name', 'course', 'code')
+        fields = ('name', 'course', 'code', 'id')
         extra_kwargs = { 'code': { 'write_only': True } }
 
 
@@ -57,8 +57,8 @@ class StudentSectionListSerializer(serializers.ModelSerializer):
 
 #serializer for indexing/creating a course and simultaneously creating sections
 class CourseListCreateSerializer(serializers.ModelSerializer):
-    teacher = serializers.StringRelatedField()
-    sections = SectionNestedSerializer(many=True, write_only=True)
+
+    sections = SectionNestedSerializer(many=True, write_only=True, required=False)
     class Meta:
         model = Course
         fields = ("name", "subject","teacher", "sections", "id")

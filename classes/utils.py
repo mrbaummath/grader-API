@@ -5,7 +5,6 @@ import string
 
 
 def generate_section_code(all_codes,code=None, count = 0):
-    print (all_codes)
     if code is not None and code not in all_codes:
         return code
     if count > 20:

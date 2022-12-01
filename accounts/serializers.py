@@ -35,7 +35,6 @@ class UserSignupSerializer(serializers.Serializer):
     is_student = serializers.BooleanField()
 
     def validate(self, data):
-        print(f"****************{data}")
         # Ensure password & password_confirmation exist
         if not data['password'] or not data['password_confirmation']:
             raise serializers.ValidationError('Please include a password and password confirmation.')
@@ -100,7 +99,7 @@ class TeacherSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-  
+
     class Meta:
         model = Student
         fields = ("id", "first_name", "last_name", "pronouns", "year", "email")

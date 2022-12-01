@@ -1,11 +1,14 @@
 
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import generics
+from rest_framework.views import APIView
 from ..models.section import Section
 from ..serializers import SectionListCreateSerializer, SectionRUDSerializer, StudentSectionListSerializer
+from accounts.serializers import StudentSerializer
 from accounts.models.student import Student
 from django.shortcuts import get_object_or_404
 from ..models import Course
+from rest_framework.response import Response
 
 
 # index and create route for sections from a specific course. Section creation can also be done while creating a course. Students will not have access to this view and will access their sections differently
@@ -56,4 +59,14 @@ class StudentSectionList(generics.ListAPIView):
             return student.classes.all()
         else:
             return []
-        
+
+#view for a teacher to add a student to their class
+# /courses/students/<section_id>/
+class AddStudentToSectionView(APIView):
+    
+    def patch(self, request, section_id):
+        section = get_object_or_404(Section, pk=section_id)
+        student = get_object_or_404(Student, pk=request.data["student_id"])
+        section.students.add(student)
+        section.save()
+        return Response(section, status=status.HTTP_200_OK)

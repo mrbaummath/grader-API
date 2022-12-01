@@ -91,6 +91,4 @@ class UserSignupView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = UserSignupSerializer
     
-    # def post(sel, request):
-    #     print(f"************sdfkljdfkjdfjkldjklf***********{request.data}")
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+

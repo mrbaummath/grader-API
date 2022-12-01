@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 # /courses GET, POST
 class CourseListCreateView(generics.ListCreateAPIView):
     """Index and create courses. Can also be used to create sections for a course while creating it"""
-    permission_classes=[DjangoModelPermissions]
+
     serializer_class = CourseListCreateSerializer
     #restrict queryet to current teacher user (or return all if superuser). Students do not have access to course level views
     def get_queryset(self):
@@ -30,7 +30,7 @@ class CourseListCreateView(generics.ListCreateAPIView):
 # /courses/<course_id> GET, PUT, PATCH, DELETE
 class CourseRUDView(generics.RetrieveUpdateDestroyAPIView):
     """Detail view, updating, and deleting sections"""
-    permission_classes=[DjangoModelPermissions]
+
     serializer_class = CourseRUDSerializer
     #restrict queryet to current teacher user (or return all if superuser). Students do not have access to course level views
     def get_queryset(self):
