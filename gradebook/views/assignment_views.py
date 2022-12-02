@@ -22,7 +22,7 @@ class AssignmentListCreateView(generics.ListCreateAPIView):
             return None
 
 #teacher view to see, update, delete assignments 
-# /gradebook/assignments/<pk>/ GET, PATCH, PUT, DELETE
+# /gradebook/assignments/update/<pk>/ GET, PATCH, PUT, DELETE
 class AssignmentRUDView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [DjangoModelPermissions]
     serializer_class = AssignmentSerializer

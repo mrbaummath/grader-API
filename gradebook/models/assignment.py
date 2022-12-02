@@ -16,7 +16,9 @@ class Assignment(models.Model):
     
     grade_type = models.CharField(
         max_length=1,
-        choices=grade_type_choices
+        choices=grade_type_choices,
+        null=True,
+        blank=True
     )
     
     course = models.ForeignKey(
@@ -27,12 +29,19 @@ class Assignment(models.Model):
     )
     
     name = models.CharField(max_length=20)
-    assigned_on = models.DateField()
-    due_date = models.DateField()
+    assigned_on = models.DateField(
+        null=True,
+        blank=True
+    )
+    due_date = models.DateField(
+        null=True,
+        blank=True
+    )
     description = models.CharField(max_length=100)
     term= models.CharField(
         max_length=20,
         blank= True,
+        null=True
     )
     
     def __str__(self):
