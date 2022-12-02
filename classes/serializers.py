@@ -10,7 +10,6 @@ class SectionNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
         fields = ('name', 'course', 'code', 'id')
-        extra_kwargs = { 'code': { 'write_only': True } }
 
 
 #section list and create serializer
