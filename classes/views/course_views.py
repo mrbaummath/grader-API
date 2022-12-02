@@ -15,8 +15,6 @@ class CourseListCreateView(generics.ListCreateAPIView):
     serializer_class = CourseListCreateSerializer
     #restrict queryet to current teacher user (or return all if superuser). Students do not have access to course level views
     def get_queryset(self):
-        # user_id = self.kwargs['user_id']
-        # user = get_object_or_404(User, pk=user_id)
         user = self.request.user
         if user.is_teacher:
             return Course.objects.filter(teacher=user.teacher)
