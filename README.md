@@ -14,7 +14,7 @@ This API supports the client side of the Grader app. The server is built with dj
 
 - django framework
 - postgresql db
-- pandas to help generate distribution views
+- pandas to help generate distribution views (later versions matbe)
 
 # Entity Relationships
 
@@ -24,36 +24,50 @@ This API supports the client side of the Grader app. The server is built with dj
 At bottom, information necessary for a gradebook which would have both a teacher and a student view is embedded in relations which can be many-to-many, one-to-many, or many-to-one. The ERD above is highly compartmentalized by design to allow for dynamic joins to allow more user customization. Beyond users, teachers, and students, the core entities which are, in my mind, crucial for the gradebook are the section and the grade itself. The section table here will function as a through table which will allow teachers to have many students across different courses and different sections of the same course. In turn, students will be associated with all their teachers by reference of each of their appearances in the section table. The grade table has it's own independent function as the container for qualitative and quantitative information about student performance (as well the assigning teacher). It is also effectively a through table for students, and assignments. Each assignment will be given to many students and each student will have many assignments. 
 
 # Routing Table
+## /accounts
+--> / GET 
+    --> Index  user accounts
+--> /signup POST
+    --> create a user account
+--> /teachers GET POST
+    --> index, create a teacher (association with user is handled automatically by serializer)
+--> /teachers/:pk GET PATCH DELETE
+    --> retrieve, update, destroy a teacher (automatically destorys the user)
+--> /students GET POST
+    --> index, create students. Student instances do not have to be associated with user
+--> /students GET PATCH DELETE
+    --> retrieve, update, destroy a student
 
-| URL                                                          | HTTP Verb | Action                                                |
-|--------------------------------------------------------------|-----------|-------------------------------------------------------|
-| /user                                                        | POST      | create user                                           |
-| /user/:id                                                    | GET       | get user details                                      |
-| /user/:id                                                    | PATCH     | update user details                                   |
-| /user/:id                                                    | DELETE    | destroy user                                          |
-| /teachers                                                    | POST      | create teacher account                                |
-| /teachers/:teacher_id                                        | GET       | get teacher details                                   |
-| /teacher/:teacher_id                                         | PATCH     | update teacher details                                |
-| /teachers/:teacher_id/classes                                | GET       | index all classes of a teacher                        |
-| /teachers/:teacher_id/classes                                | POST      | create class and sections                             |
-| /teachers/:teacher_id/classes/:class_id                      | GET       | get class/section details                             |
-| /teachers/:teacher_id/classes/:class_id                      | PATCH     | update class/section details                          |
-| /teachers/:teacher_id/classes/:class_id                      | DELETE    | delete class/section                                  |
-| /teachers/:teacher_id/classes/:class_id/students             | GET       | get students details from a particular class          |
-| /teachers/:teacher_id/classes/:class_id/students             | POST      | create student from teacher view                      |
-| /teachers/:teacher_id/classes/:class_id/students/:student_id | DELETE    | remove student from teacher view                      |
-| /teachers/:teacher_id/classes/:class_id/students/:student_id | PATCH     | update student from teacher view                      |
-| /teachers/:teacher_id/classes/assignments                    | GET       | index all assignments from a class                    |
-| /teachers/:teacher_id/classes/assignments                    | POST      | create assignment for a class                         |
-| /teachers/:teacher_id/classes/assignments/:assignment_id     | GET       | get assignment details                                |
-| /teachers/:teacher_id/classes/assignments/:assignment_id     | POST      | create grade                                          |
-| /teachers/:teacher_id/classes/assignments/:assignment_id     | PATCH     | update assignment or grade                            |
-| /teachers/:teacher_id/classes/assignments/:assignment_id     | DELETE    | delete assignment/grade                               |
-| /teachers/:teacher_id/gradebooks                             | GET       | index all gradebooks aross courses                    |
-| /teachers/:teacher_id/gradebooks/:class_id?view=<view>       | GET       | see gradebooks for a class, configured w/ view option |
-| /teachers/:teacher_id/gradebooks/:class_id                   | PATCH     | update gradebook                                      |
-| /teachers/:teacher_id/gradebooks/:class_id                   | PATCH     | destroy gradebook                                     |
-| /students?teacher_code=<teacher_code>                        | POST      | create student account (student view)                 |
-| /students/:student_id                                        | GET       | get detailed view for student (student view)          |
-| /students/:student_id                                        | PATCH     | update student details (student view)                 |
-| /students/:student_id                                        | DELETE    | delete student as user                                |
+## /courses
+--> /, GET POST
+    --> Index, create a course and related sections
+--> /:pk GET PATCH DELETE
+    --> retrieve, update, destroy a course
+--> /:course_id/sections/ GET POST
+    --> Index, create sections 
+--> /:course_id/sections/:pk GET PATCH DELETE
+    --> retrieve, update, destroy a section
+--> /myclasses/ GET
+    --> for students only to index the sections to which they belong
+--> /students/:section_id/ PATCH   
+    --> to be used by a teacher to add a student to their course
+--> /students/join/:student_id> PATCH
+    --> for a student to use a join code to join a section
+
+## /gradebook
+--> /assignments/:course_id GET POST
+    --> index (by teacher), create an assignment 
+--> /assignments/update/:pk/ GET PATCH DELETE
+    --> retrieve, update, destroy an assignment 
+--> /assignments/student/ GET
+    --> index assignments (student)
+--> /assignments/:assignment_id/grades/ GET POST 
+    --> index, create grades for an assignment
+--> /grades/:pk/ GET PATCH DELETE
+    --> retrieve, update, destroy a grade
+--> /mygrades/ GET
+    --> index grades (student)
+--> /courses/:course_id>/ GET
+    --> index all grades for a course (meant for teacher use)
+--> /grades/updatemany/ PATCH
+    --> batch update for many grade (values only)
