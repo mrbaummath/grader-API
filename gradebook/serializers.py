@@ -27,6 +27,18 @@ class GradeSerializer(serializers.ModelSerializer):
         model= Grade
         fields = '__all__'
 
+class StudentGradeSerializer(serializers.ModelSerializer):
+    assignment = serializers.StringRelatedField()
+    due = serializers.SerializerMethodField()
+    course = serializers.StringRelatedField()
+    
+    def get_due(self, obj):
+       return obj.assignment.due_date
+    
+    class Meta:
+        model = Grade
+        fields = ('assignment', 'value', 'due', 'id', 'course')
+
 class GradebookEntrySerializer(serializers.ModelSerializer):
     assignment = serializers.StringRelatedField()
     

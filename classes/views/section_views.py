@@ -1,6 +1,6 @@
 
 from rest_framework.permissions import DjangoModelPermissions
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.views import APIView
 from ..models.section import Section
 from ..serializers import SectionListCreateSerializer, SectionRUDSerializer, StudentSectionListSerializer
@@ -46,7 +46,6 @@ class SectionRUDView(generics.RetrieveUpdateDestroyAPIView):
     
 
 #view for a student to retrieve class information. Uses request context so it is not accessible to anyone who is not logged in as the student
-
 # /courses/myclasses GET
 class StudentSectionList(generics.ListAPIView):
     permission_classes = [DjangoModelPermissions]
@@ -69,4 +68,16 @@ class AddStudentToSectionView(APIView):
         student = get_object_or_404(Student, pk=request.data["student_id"])
         section.students.add(student)
         section.save()
-        return Response(section, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
+
+#view for a student to join a section using a section code
+# /courses/students/join/<student_id>
+
+class StudentJoinSection(APIView):
+    
+    def patch(self, request, student_id):
+        code = request.data['code']
+        student = get_object_or_404(Student, pk=student_id)
+        section = get_object_or_404(Section, code=code)
+        section.students.add(student)
+        return Response(status=status.HTTP_200_OK)

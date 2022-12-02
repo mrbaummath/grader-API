@@ -1,6 +1,6 @@
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import generics, status
-from ..serializers import GradeSerializer, CourseGradesByStudentSerializer
+from ..serializers import GradeSerializer, CourseGradesByStudentSerializer, StudentGradeSerializer
 from rest_framework.response import Response
 from classes.models.course import Course
 from ..models.grade import Grade
@@ -44,7 +44,7 @@ class GradeRUDView(generics.RetrieveUpdateDestroyAPIView):
 #/gradebook/mygrades/
 class StudentGradesView(generics.ListAPIView):
     permission_classes = [DjangoModelPermissions]
-    serializer_class = GradeSerializer
+    serializer_class = StudentGradeSerializer
     
     def get_queryset(self):
         user = self.request.user
